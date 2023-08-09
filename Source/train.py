@@ -1,5 +1,6 @@
 from preprocess import get_datasets
 from models.basic_model import BasicModel
+from models.dropout_model import DropoutModel
 from models.vgg_model import VGGModel
 from models.merged_model import MergedModel
 from config import image_size, categories
@@ -10,9 +11,10 @@ input_shape = (image_size[0], image_size[1], 3)
 categories_count = 3
 
 models = {
-    'basic_model': BasicModel,
+    #'basic_model': BasicModel,
+    #'dropout_model': DropoutModel,
     #'vgg_model': VGGModel,
-    #'merged_model': MergedModel,
+    'merged_model': MergedModel,
 }
 
 def plot_history(history):
@@ -40,17 +42,23 @@ def plot_history(history):
     plt.show()
 
 if __name__ == "__main__":
-    epochs = 15
+    epochs = 50
     print('* Data preprocessing')
     train_dataset, validation_dataset, test_dataset = get_datasets()
     for name, model_class in models.items():
         print('* Training {} for {} epochs'.format(name, epochs))
         model = model_class(input_shape, categories_count)
-        model.train_model(train_dataset, validation_dataset, epochs)
+        history = model.train_model(train_dataset, validation_dataset, epochs)
         print('* Evaluating {}'.format(name))
         model.evaluate(test_dataset)
         print('* Confusion Matrix for {}'.format(name))
         print(model.get_confusion_matrix(test_dataset))
         filename = '{}_{}_epochs_timestamp_{}.keras'.format(name, epochs, int(time.time()))
         model.save_model(filename)
+        print("The number of parameters:")
+        model.print_summary()
+        model.plot_model_shape()
         print('* Model saved as {}'.format(filename))
+        plot_history(history)
+
+    
