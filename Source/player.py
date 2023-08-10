@@ -31,6 +31,9 @@ class RandomPlayer:
         return random.choice(positions)
 
 class UserWebcamPlayer:
+    def __init__(self):
+        self.model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
+    
     def _process_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         width, height = frame.shape
