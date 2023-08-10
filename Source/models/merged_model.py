@@ -1,6 +1,7 @@
 from models.model import Model
 import tensorflow as tf
 from tensorflow.keras import layers, models
+from tensorflow.keras.layers import BatchNormalization
 
 class MergedModel(Model):
     def _define_model(self, input_shape, categories_count):
@@ -10,15 +11,25 @@ class MergedModel(Model):
         #pass
         self.model = models.Sequential()
         
-        self.model.add(layers.Conv2D(8, (3, 3), activation='relu', input_shape=input_shape))
+        self.model.add(layers.Conv2D(4, (3, 3), activation='relu', input_shape=input_shape))
+        self.model.add(BatchNormalization())
+
         self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(BatchNormalization())
+
+        self.model.add(layers.Conv2D(8, (3, 3), activation='relu'))
+        self.model.add(BatchNormalization())
+
+        self.model.add(layers.MaxPooling2D((2, 2)))
+        self.model.add(BatchNormalization())
+
         self.model.add(layers.Conv2D(16, (3, 3), activation='relu'))
-        self.model.add(layers.MaxPooling2D((2, 2)))
-        self.model.add(layers.Conv2D(32, (3, 3), activation='relu'))
+        self.model.add(BatchNormalization())
+        
 
         self.model.add(layers.Flatten())
-
-        self.model.add(layers.Dense(64, activation='relu'))
+        
+        self.model.add(layers.Dense(16, activation='relu'))
 
         self.model.add(layers.Dense(categories_count, activation='softmax'))
     

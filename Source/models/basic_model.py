@@ -2,6 +2,7 @@ from models.model import Model
 import tensorflow as tf
 from tensorflow.keras import layers, models
 
+
 class BasicModel(Model):
     def _define_model(self, input_shape, categories_count):
         # Your code goes here

@@ -29,7 +29,7 @@ def _split_data(train_directory, test_directory, batch_size, validation_split):
 
 def _augment_dataset(dataset):
     # YOUR CODE
-    #
+    
     data_augmentation = tf.keras.Sequential([
         layers.RandomFlip("horizontal_and_vertical"),
         layers.RandomZoom(0.1)
@@ -42,6 +42,6 @@ def get_datasets():
         _split_data(train_directory, test_directory, batch_size, validation_split)
     # YOUR CODE
     # call augment_dataset
-    #
+    
     train_dataset = _augment_dataset(train_dataset)
     return train_dataset, validation_dataset, test_dataset

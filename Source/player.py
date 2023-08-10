@@ -2,6 +2,8 @@ from config import BOARD_SIZE, categories, image_size
 import matplotlib.pyplot as plt
 import cv2
 from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing.image import img_to_array
+import numpy as np
 
 class TicTacToePlayer:
     def get_move(self, board_state):
@@ -101,13 +103,25 @@ class UserWebcamPlayer:
         #
         # You have to use your saved model, use resized img as input, and get one classification value out of it
         # The classification value should be 0, 1, or 2 for neutral, happy or surprise respectively
-        
+
+        # import matplotlib.pyplot as plt
+        # plt.imshow(img, cmap='gray', vmin=0, vmax=255)
+        # plt.show()
+
         img = cv2.resize(img, (image_size[0], image_size[1]))
-        loaded_model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
+        img = np.expand_dims(img,axis=0)
+        img = np.expand_dims(img,axis=-1)
+        img = np.repeat(img, 3, axis=-1)
+        model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
+        predictions = model.predict(img)
+        result = np.argmax(predictions[0])
+        
+        print(predictions,result)
 
         
 
-        return 0
+        #return 0
+        return int(result)
     
     def get_move(self, board_state):
         row, col = None, None
