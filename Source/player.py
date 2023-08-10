@@ -102,13 +102,21 @@ class UserWebcamPlayer:
         #
         # You have to use your saved model, use resized img as input, and get one classification value out of it
         # The classification value should be 0, 1, or 2 for neutral, happy or surprise respectively
-        
-        img = cv2.resize(img, (image_size[0], image_size[1]))
-        loaded_model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
 
-        
+        # convert to rgb and resize
+        img_color = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        resized_img = cv2.resize(img_color, image_size)
 
-        return 0
+        # preprocessing
+        resized_img = resized_img / 255.0  
+        resized_img = np.expand_dims(resized_img, axis=0)  
+        
+        # load model
+        model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
+        
+        # perform emotion classification using the model
+        predictions = model.predict(resized_img)        
+        return np.argmax(predictions[0])    
     
     def get_move(self, board_state):
         row, col = None, None
