@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 import cv2
 from tensorflow.keras.models import load_model
 import numpy as np
-
 class TicTacToePlayer:
     def get_move(self, board_state):
         raise NotImplementedError()
@@ -30,6 +29,9 @@ class RandomPlayer:
         return random.choice(positions)
 
 class UserWebcamPlayer:
+    def __init__(self):
+        self.model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
+    
     def _process_frame(self, frame):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         width, height = frame.shape
@@ -110,12 +112,9 @@ class UserWebcamPlayer:
         # preprocessing
         resized_img = resized_img / 255.0  
         resized_img = np.expand_dims(resized_img, axis=0)  
-        
-        # load model
-        model = load_model('merged_model_50_epochs_timestamp_1691605432.keras')
-        
+
         # perform emotion classification using the model
-        predictions = model.predict(resized_img)        
+        predictions = self.model.predict(resized_img)        
         return np.argmax(predictions[0])    
     
     def get_move(self, board_state):
